@@ -1,0 +1,8 @@
+services:
+  app:
+    image: ghcr.io/tafi00/scrape-api:latest
+    ports:
+      - 4334:4334
+    volumes:
+      - .:/app
+    working_dir: /app
