@@ -135,11 +135,11 @@ app.post('/download', async (req, res) => {
       const contentType = headers['content-type'] || '';
       const contentDisposition = headers['content-disposition'] || '';
       
-      // Kiểm tra nếu đây là một phản hồi tải xuống
-      if (contentDisposition.includes('attachment') || 
-          contentType.includes('application/pdf') || 
-          contentType.includes('application/octet-stream')) {
-        console.log(`Phát hiện tải xuống từ: ${url}`);
+      // Kiểm tra nếu đây là một phản hồi tải xuống và thành công
+      if (response.ok() && (contentDisposition.includes('attachment') ||
+          contentType.includes('application/pdf') ||
+          contentType.includes('application/octet-stream'))) {
+        console.log(`Phát hiện tải xuống thành công từ: ${url}`);
         
         try {
           const buffer = await response.buffer();
@@ -572,7 +572,19 @@ app.get('/download/:fileName', (req, res) => {
 });
 
 async function scrapeData(url) {
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await puppeteer.launch({ 
+    headless: "new",
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox', 
+      '--disable-web-security', 
+      '--disable-features=IsolateOrigins,site-per-process',
+      '--disable-features=BlockInsecurePrivateNetworkRequests',
+      '--window-size=1920,1080',
+      '--disable-dev-shm-usage',
+      '--ignore-certificate-errors'
+    ]
+  });
   const page = await browser.newPage();
   
   // Thiết lập user agent
