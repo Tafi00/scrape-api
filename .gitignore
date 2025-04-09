@@ -9,7 +9,7 @@ coverage/
 # Production
 build/
 dist/
-
+uploads/
 # Misc
 .DS_Store
 .env
